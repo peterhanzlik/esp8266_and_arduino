@@ -83,7 +83,8 @@ void wifi_connect() {
         break;
       }
     }
-    Serial.println("wifi connected");
+    if (Attempt != 150)
+			Serial.println("wifi connected");
   }
 }
 
@@ -97,7 +98,9 @@ boolean mqtt_publish(char* topic_tosend, String payload_tosend) {
       if (client.publish(topic_tosend, p, msg_length, 1)) {
         free(p);
         client.disconnect();
-        Serial.println(payload_tosend);
+        Serial.print(topic_tosend);
+        Serial.print(":");
+				Serial.println(payload_tosend);
         return 1;
       } else {
         free(p);
@@ -117,7 +120,7 @@ boolean mqtt_publish(char* topic_tosend, String payload_tosend) {
 
 boolean sendMsg(char* topic_tosend, String payload_tosend) {
   int Attempt = 0;
-  while (mqtt_publish(topic, payload) == 0) {
+  while (mqtt_publish(topic_tosend, payload_tosend) == 0) {
     delay(100);
     Attempt++;
     if (Attempt == 5) {
